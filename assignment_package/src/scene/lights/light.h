@@ -21,6 +21,8 @@ class Light
     // no energy at all.
     virtual Color3f Le(const Ray &r) const;
 
+    QString name; // For debugging
+
   protected:
     const Transform transform;
 };

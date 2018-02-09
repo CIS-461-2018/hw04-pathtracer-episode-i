@@ -5,10 +5,6 @@
 #include <scene/geometry/disc.h>
 #include <scene/geometry/squareplane.h>
 #include <scene/materials/mattematerial.h>
-#include <scene/materials/mirrormaterial.h>
-#include <scene/materials/transmissivematerial.h>
-#include <scene/materials/glassmaterial.h>
-#include <scene/materials/plasticmaterial.h>
 #include <scene/lights/diffusearealight.h>
 #include <iostream>
 
@@ -241,99 +237,6 @@ bool JSONReader::LoadMaterial(QJsonObject &material, const QStringRef &local_pat
             normalMap = std::make_shared<QImage>(img_filepath);
         }
         auto result = std::make_shared<MatteMaterial>(Kd, sigma, textureMap, normalMap);
-        mtl_map->insert(material["name"].toString(), result);
-    }
-    else if(QString::compare(type, QString("MirrorMaterial")) == 0)
-    {
-        std::shared_ptr<QImage> roughnessMap;
-        std::shared_ptr<QImage> textureMap;
-        std::shared_ptr<QImage> normalMap;
-        Color3f Kr = ToVec3(material["Kr"].toArray());
-        float roughness = 0.f;
-        if(material.contains(QString("roughness"))) {
-            roughness = material["roughness"].toDouble();
-        }
-        if(material.contains(QString("roughnessMap"))) {
-            QString img_filepath = local_path.toString().append(material["roughnessMap"].toString());
-            roughnessMap = std::make_shared<QImage>(img_filepath);
-        }
-        if(material.contains(QString("textureMap"))) {
-            QString img_filepath = local_path.toString().append(material["textureMap"].toString());
-            textureMap = std::make_shared<QImage>(img_filepath);
-        }
-        if(material.contains(QString("normalMap"))) {
-            QString img_filepath = local_path.toString().append(material["normalMap"].toString());
-            normalMap = std::make_shared<QImage>(img_filepath);
-        }
-        auto result = std::make_shared<MirrorMaterial>(Kr, roughness, roughnessMap, textureMap, normalMap);
-        mtl_map->insert(material["name"].toString(), result);
-    }
-    else if(QString::compare(type, QString("TransmissiveMaterial")) == 0)
-    {
-        std::shared_ptr<QImage> textureMap;
-        std::shared_ptr<QImage> normalMap;
-        Color3f Kt = ToVec3(material["Kt"].toArray());
-        float eta = material["eta"].toDouble();
-        if(material.contains(QString("textureMap"))) {
-            QString img_filepath = local_path.toString().append(material["textureMap"].toString());
-            textureMap = std::make_shared<QImage>(img_filepath);
-        }
-        if(material.contains(QString("normalMap"))) {
-            QString img_filepath = local_path.toString().append(material["normalMap"].toString());
-            normalMap = std::make_shared<QImage>(img_filepath);
-        }
-        auto result = std::make_shared<TransmissiveMaterial>(Kt, eta, textureMap, normalMap);
-        mtl_map->insert(material["name"].toString(), result);
-    }
-    else if(QString::compare(type, QString("GlassMaterial")) == 0)
-    {
-        std::shared_ptr<QImage> textureMapRefl;
-        std::shared_ptr<QImage> textureMapTransmit;
-        std::shared_ptr<QImage> normalMap;
-        Color3f Kr = ToVec3(material["Kr"].toArray());
-        Color3f Kt = ToVec3(material["Kt"].toArray());
-        float eta = material["eta"].toDouble();
-        if(material.contains(QString("textureMapRefl"))) {
-            QString img_filepath = local_path.toString().append(material["textureMapRefl"].toString());
-            textureMapRefl = std::make_shared<QImage>(img_filepath);
-        }
-        if(material.contains(QString("textureMapTransmit"))) {
-            QString img_filepath = local_path.toString().append(material["textureMapTransmit"].toString());
-            textureMapTransmit = std::make_shared<QImage>(img_filepath);
-        }
-        if(material.contains(QString("normalMap"))) {
-            QString img_filepath = local_path.toString().append(material["normalMap"].toString());
-            normalMap = std::make_shared<QImage>(img_filepath);
-        }
-        auto result = std::make_shared<GlassMaterial>(Kr, Kt, eta, textureMapRefl, textureMapTransmit, normalMap);
-        mtl_map->insert(material["name"].toString(), result);
-    }
-    else if(QString::compare(type, QString("PlasticMaterial")) == 0)
-    {
-        std::shared_ptr<QImage> roughnessMap;
-        std::shared_ptr<QImage> textureMapDiffuse;
-        std::shared_ptr<QImage> textureMapSpecular;
-        std::shared_ptr<QImage> normalMap;
-        Color3f Kd = ToVec3(material["Kd"].toArray());
-        Color3f Ks = ToVec3(material["Ks"].toArray());
-        float roughness = material["roughness"].toDouble();
-        if(material.contains(QString("roughnessMap"))) {
-            QString img_filepath = local_path.toString().append(material["roughnessMap"].toString());
-            roughnessMap = std::make_shared<QImage>(img_filepath);
-        }
-        if(material.contains(QString("textureMapDiffuse"))) {
-            QString img_filepath = local_path.toString().append(material["textureMapDiffuse"].toString());
-            textureMapDiffuse = std::make_shared<QImage>(img_filepath);
-        }
-        if(material.contains(QString("textureMapSpecular"))) {
-            QString img_filepath = local_path.toString().append(material["textureMapSpecular"].toString());
-            textureMapSpecular = std::make_shared<QImage>(img_filepath);
-        }
-        if(material.contains(QString("normalMap"))) {
-            QString img_filepath = local_path.toString().append(material["normalMap"].toString());
-            normalMap = std::make_shared<QImage>(img_filepath);
-        }
-        auto result = std::make_shared<PlasticMaterial>(Kd, Ks, roughness, roughnessMap, textureMapDiffuse, textureMapSpecular, normalMap);
         mtl_map->insert(material["name"].toString(), result);
     }
     else
