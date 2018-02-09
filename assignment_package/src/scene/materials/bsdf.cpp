@@ -71,3 +71,11 @@ float BxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const
 {
     return SameHemisphere(wo, wi) ? Inv2Pi : 0;
 }
+
+BSDF::~BSDF()
+{
+    for(int i = 0; i < numBxDFs; i++)
+    {
+        delete bxdfs[i];
+    }
+}
